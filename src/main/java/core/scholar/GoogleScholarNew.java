@@ -35,25 +35,34 @@ public class GoogleScholarNew {
 
         Document document = getInitialDocToParse();
         String informationsUrl = baseUrl + getUrlOfInfos(document);
-
         Document citationsInformations = DocProvider.getDocument(informationsUrl + CITATION_HISTORY_URL);
 
         Map<String, Integer> graphicsInfo = getCitationHistory(citationsInformations);
 
-        Document authorInformations = DocProvider.getDocument(informationsUrl);
+        Document authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=0&pagesize=100");
 
         Author author = new Author(authorName);
 
         author.setCitationHistory(graphicsInfo);
 
         addAuthorInformations(author, authorInformations);
+        int defaultPageSize = 100;
+        int offset = 100;
+        boolean shouldStop = false;
+        boolean firstPageRequest = true;
+        while (!shouldStop) {
+            List<Publication> publications = getPublicationsByAuthor(authorInformations);
+            if (publications.size() < 100 && !firstPageRequest) {
+                shouldStop = true;
+            }
 
-        List<Publication> publications = getPublicationsByAuthor(authorInformations);
-
-        for (Publication publication : publications) {
-            author.addPublication(publication);
+            for (Publication publication : publications) {
+                author.addPublication(publication);
+                firstPageRequest = false;
+            }
+            offset += 100;
+            authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=" + offset + "pagesize=100");
         }
-
         return author;
     }
 
