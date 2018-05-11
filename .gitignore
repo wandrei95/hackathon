@@ -6,3 +6,5 @@
 *.iml
 /output/
 /target/
+*.misc
+misc.xml
