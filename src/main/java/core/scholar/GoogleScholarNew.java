@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GoogleScholarNew {
@@ -38,7 +39,7 @@ public class GoogleScholarNew {
         String informationsUrl = baseUrl + getUrlOfInfos(document);
 
         Document authorInformations = DocProvider.getDocument(informationsUrl);
-        Elements elements =authorInformations.select("a.gsc_a_at");
+        Elements elements = authorInformations.select("a.gsc_a_at");
         System.out.println(elements);
         return null;
     }
@@ -50,8 +51,15 @@ public class GoogleScholarNew {
         return authorUrl;
     }
 
-    private List<Publication> getPublicationsByAuthor(Document authorInformations){
-        Elements elements =authorInformations.select("a.gsc_a_at");
+    private List<Publication> getPublicationsByAuthor(Document authorInformations) {
+        List<Publication> publications = new ArrayList<Publication>();
+        Elements elements = authorInformations.select("a.gsc_a_at");
+        for (Element element : elements) {
+            String publicationTitle = element.text();
+            Publication publication = new Publication();
+            publication.setTitle(publicationTitle);
+
+        }
         return null;
     }
 
