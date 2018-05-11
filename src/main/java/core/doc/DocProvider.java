@@ -20,6 +20,7 @@ public class DocProvider {
 
     public static Document getDocument(String url) throws IOException {
         Connection conn = Jsoup.connect(url);
+        conn.timeout(0);
         addHeader(conn);
         return conn.get();
     }

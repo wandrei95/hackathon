@@ -1,7 +1,9 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Author {
     private String name;
@@ -10,6 +12,23 @@ public class Author {
     private Integer publicationsNr;
     private String citations;
     private List<Publication> publications = new ArrayList<Publication>();
+    private Map<Integer, Integer> citationHistory = new HashMap<Integer, Integer>();
+
+    public List<Publication> getPublications() {
+        return publications;
+    }
+
+    public void setPublications(List<Publication> publications) {
+        this.publications = publications;
+    }
+
+    public Map<Integer, Integer> getCitationHistory() {
+        return citationHistory;
+    }
+
+    public void setCitationHistory(Map<Integer, Integer> citationHistory) {
+        this.citationHistory = citationHistory;
+    }
 
     public Author(String name) {
         this.name = name;

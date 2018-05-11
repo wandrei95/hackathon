@@ -9,9 +9,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
 
 public class GoogleScholarNew {
     private static final String URL_SEARCH = "https://scholar.google.ro/citations?view_op=search_authors&mauthors=";
@@ -19,6 +18,7 @@ public class GoogleScholarNew {
     private static final String UNKNOWN_SHIT = "&hl=en&oi=drw";
     private static String baseUrl = "https://scholar.google.ro/";
     private String authorName;
+    public static final String CITATION_HISTORY_URL = "#d=gsc_md_hist&p=&u=";
 
     public GoogleScholarNew(String author) {
         String firstName = StringUtils.substringBefore(author, " ");
@@ -27,7 +27,7 @@ public class GoogleScholarNew {
         this.authorName = author;
     }
 
-    public Document getInitialDocToParse() {
+    private Document getInitialDocToParse() {
         Document document = null;
         try {
             document = DocProvider.getDocument(URL_SEARCH + AUTHOR_TO_LOOK_FOR + UNKNOWN_SHIT);
@@ -41,9 +41,15 @@ public class GoogleScholarNew {
         Document document = getInitialDocToParse();
         String informationsUrl = baseUrl + getUrlOfInfos(document);
 
+        Document citationsInformations = DocProvider.getDocument(informationsUrl + CITATION_HISTORY_URL);
+
+        Map<Integer, Integer> graphicsInfo = getCitationHistory(citationsInformations);
+
         Document authorInformations = DocProvider.getDocument(informationsUrl);
 
         Author author = new Author(authorName);
+
+        author.setCitationHistory(graphicsInfo);
 
         addAuthorInformations(author, authorInformations);
 
@@ -54,6 +60,16 @@ public class GoogleScholarNew {
         }
 
         return author;
+    }
+
+    private Map<Integer, Integer> getCitationHistory(Document citationsInformations) {
+        Elements elements = citationsInformations.select("a.gsc_g_a");
+        Map<Integer, Integer> graphicMap = new HashMap<Integer, Integer>();
+        int startingYear = 2018 - elements.size() +1;
+        for (Element element : elements) {
+            graphicMap.put(startingYear++, Integer.parseInt(element.text()));
+        }
+        return graphicMap;
     }
 
     private String getUrlOfInfos(Document document) {
