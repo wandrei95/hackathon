@@ -13,37 +13,43 @@ public class DataFetcher {
         this.googleScholarNew = googleScholarNew;
     }
 
-    public Author getAuthorByName(String authorName) throws IOException {
+    public void getAuthorByName(String authorName, DataFetcherListener listener) throws IOException {
         DatabaseReference ref = FirebaseDatabase
                 .getInstance()
                 .getReference("/authors")
                 .child(authorName);
 
-        final boolean[] shouldWait = {true};
-
-        final Author[] author = {null};
-
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                shouldWait[0] = false;
-                author[0] = dataSnapshot.getValue(Author.class);
+                Author author = dataSnapshot.getValue(Author.class);
+                if (author == null) {
+                    try {
+                        author = googleScholarNew.getAuthor(authorName);
+                        ref.setValueAsync(author);
+                        listener.onDataFetched(author);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    listener.onDataFetched(author);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                shouldWait[0] = false;
+                try {
+                    Author author = googleScholarNew.getAuthor(authorName);
+                    ref.setValueAsync(author);
+                    listener.onDataFetched(author);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
+    }
 
-        while (shouldWait[0]) {
-        }
-
-        if (author[0] == null) {
-            author[0] = googleScholarNew.getAuthor(authorName);
-            ref.setValueAsync(author[0]);
-        }
-
-        return author[0];
+    public interface DataFetcherListener {
+        void onDataFetched(Author author);
     }
 }
