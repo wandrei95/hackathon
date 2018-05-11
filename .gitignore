@@ -1,0 +1,7 @@
+/.metadata/
+/.idea/
+/*.DS_Store
+/idea-netMD
+/out/
+*.iml
+/output/
