@@ -9,6 +9,17 @@ public class Author {
     public Integer publicationsNr;
     public List<Publication> publications;
 
+    public Author() {
+    }
+
+    public Author(String name, int i10index, String hIndex, Integer publicationsNr, List<Publication> publications) {
+        this.name = name;
+        this.i10index = i10index;
+        this.hIndex = hIndex;
+        this.publicationsNr = publicationsNr;
+        this.publications = publications;
+    }
+
     public void addPublication(Publication publication) {
         publications.add(publication);
     }

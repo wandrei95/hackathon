@@ -17,24 +17,37 @@ public class AuthorController {
     @RequestMapping(value = "/author", method = RequestMethod.GET)
     public Author getAuthorDetails(@RequestParam("authorName") String authorName) {
         List<Publication> publications = new ArrayList<>();
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
-        publications.add(new Publication(System.currentTimeMillis(), 53.2734, -7.778320310000026));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
+        publications.add(new Publication(3, 2000, "authors", "title"));
 
-        return new Author("Author name", "h index", publications);
+        return new Author(authorName, 65, "h index", publications.size(), publications);
     }
 }

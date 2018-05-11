@@ -6,6 +6,16 @@ public class Publication {
     public String authors;
     public String title;
 
+    public Publication() {
+    }
+
+    public Publication(int citations, int year, String authors, String title) {
+        this.citations = citations;
+        this.year = year;
+        this.authors = authors;
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }
