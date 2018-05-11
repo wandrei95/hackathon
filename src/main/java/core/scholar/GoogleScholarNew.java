@@ -47,7 +47,7 @@ public class GoogleScholarNew {
 
         addAuthorInformations(author, authorInformations);
         int defaultPageSize = 100;
-        int offset = 100;
+        int offset = 0;
         boolean shouldStop = false;
         boolean firstPageRequest = true;
         while (!shouldStop) {
@@ -55,13 +55,14 @@ public class GoogleScholarNew {
             if (publications.size() < 100 && !firstPageRequest) {
                 shouldStop = true;
             }
-
-            for (Publication publication : publications) {
-                author.addPublication(publication);
-                firstPageRequest = false;
+            if (!publications.isEmpty()) {
+                for (Publication publication : publications) {
+                    author.addPublication(publication);
+                    firstPageRequest = false;
+                }
             }
             offset += 100;
-            authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=" + offset + "pagesize=100");
+            authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=" + offset + "&pagesize=100");
         }
         return author;
     }
