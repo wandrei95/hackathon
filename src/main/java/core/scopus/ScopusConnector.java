@@ -1,8 +1,7 @@
 package core.scopus;
 
-
-import core.Author;
-import core.Publication;
+import core.entities.Author;
+import core.entities.Publication;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

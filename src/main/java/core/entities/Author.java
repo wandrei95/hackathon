@@ -1,4 +1,4 @@
-package core;
+package core.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public class Author {
     private Integer publicationsNr;
     private String citations;
     private List<Publication> publications = new ArrayList<Publication>();
-    private Map<Integer, Integer> citationHistory = new HashMap<Integer, Integer>();
+    private Map<String, Integer> citationHistory = new HashMap<>();
 
     public List<Publication> getPublications() {
         return publications;
@@ -22,11 +22,11 @@ public class Author {
         this.publications = publications;
     }
 
-    public Map<Integer, Integer> getCitationHistory() {
+    public Map<String, Integer> getCitationHistory() {
         return citationHistory;
     }
 
-    public void setCitationHistory(Map<Integer, Integer> citationHistory) {
+    public void setCitationHistory(Map<String, Integer> citationHistory) {
         this.citationHistory = citationHistory;
     }
 
@@ -89,5 +89,4 @@ public class Author {
     public void setPublicationsNr(Integer publicationsNr) {
         this.publicationsNr = publicationsNr;
     }
-
 }

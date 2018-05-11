@@ -1,8 +1,8 @@
 package core.scholar;
 
-import core.Author;
-import core.Publication;
 import core.doc.DocProvider;
+import core.entities.Author;
+import core.entities.Publication;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,22 +10,13 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
 
 public class GoogleScholarNew {
     private static final String URL_SEARCH = "https://scholar.google.ro/citations?view_op=search_authors&mauthors=";
     private static String AUTHOR_TO_LOOK_FOR = null;
     private static final String UNKNOWN_SHIT = "&hl=en&oi=drw";
     private static String baseUrl = "https://scholar.google.ro/";
-    private String authorName;
     public static final String CITATION_HISTORY_URL = "#d=gsc_md_hist&p=&u=";
-
-    public GoogleScholarNew(String author) {
-        String firstName = StringUtils.substringBefore(author, " ");
-        String lastName = StringUtils.substringAfter(author, " ");
-        AUTHOR_TO_LOOK_FOR = firstName + "+" + lastName;
-        this.authorName = author;
-    }
 
     private Document getInitialDocToParse() {
         Document document = null;
@@ -37,13 +28,17 @@ public class GoogleScholarNew {
         return document;
     }
 
-    public Author getAuthor() throws IOException {
+    public Author getAuthor(String authorName) throws IOException {
+        String firstName = StringUtils.substringBefore(authorName, " ");
+        String lastName = StringUtils.substringAfter(authorName, " ");
+        AUTHOR_TO_LOOK_FOR = firstName + "+" + lastName;
+
         Document document = getInitialDocToParse();
         String informationsUrl = baseUrl + getUrlOfInfos(document);
 
         Document citationsInformations = DocProvider.getDocument(informationsUrl + CITATION_HISTORY_URL);
 
-        Map<Integer, Integer> graphicsInfo = getCitationHistory(citationsInformations);
+        Map<String, Integer> graphicsInfo = getCitationHistory(citationsInformations);
 
         Document authorInformations = DocProvider.getDocument(informationsUrl);
 
@@ -62,12 +57,12 @@ public class GoogleScholarNew {
         return author;
     }
 
-    private Map<Integer, Integer> getCitationHistory(Document citationsInformations) {
+    private Map<String, Integer> getCitationHistory(Document citationsInformations) {
         Elements elements = citationsInformations.select("a.gsc_g_a");
-        Map<Integer, Integer> graphicMap = new HashMap<Integer, Integer>();
-        int startingYear = 2018 - elements.size() +1;
+        Map<String, Integer> graphicMap = new HashMap<>();
+        int startingYear = 2018 - elements.size() + 1;
         for (Element element : elements) {
-            graphicMap.put(startingYear++, Integer.parseInt(element.text()));
+            graphicMap.put(String.valueOf(startingYear++), Integer.parseInt(element.text()));
         }
         return graphicMap;
     }
