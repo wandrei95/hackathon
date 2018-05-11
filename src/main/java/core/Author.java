@@ -1,23 +1,38 @@
 package core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Author {
-    public String name;
-    public int i10index;
-    public String hIndex;
-    public Integer publicationsNr;
-    public List<Publication> publications;
+    private String name;
+    private String i10index;
+    private String hIndex;
+    private Integer publicationsNr;
+    private String citations;
+    private List<Publication> publications = new ArrayList<Publication>();
+
+    public Author(String name) {
+        this.name = name;
+    }
 
     public Author() {
     }
 
-    public Author(String name, int i10index, String hIndex, Integer publicationsNr, List<Publication> publications) {
+    public Author(String name, String i10index, String hIndex, Integer publicationsNr, String citations, List<Publication> publications) {
         this.name = name;
         this.i10index = i10index;
         this.hIndex = hIndex;
         this.publicationsNr = publicationsNr;
+        this.citations = citations;
         this.publications = publications;
+    }
+
+    public String getCitations() {
+        return citations;
+    }
+
+    public void setCitations(String citations) {
+        this.citations = citations;
     }
 
     public void addPublication(Publication publication) {
@@ -32,7 +47,11 @@ public class Author {
         this.name = name;
     }
 
-    public void setI10index(int i10index) {
+    public String getI10index() {
+        return i10index;
+    }
+
+    public void setI10index(String i10index) {
         this.i10index = i10index;
     }
 

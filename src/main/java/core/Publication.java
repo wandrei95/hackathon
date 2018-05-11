@@ -1,19 +1,39 @@
 package core;
 
+import java.util.List;
+
 public class Publication {
-    public int citations;
-    public int year;
-    public String authors;
-    public String title;
+    private String citations;
+    private String year;
+    private List<String> authors;
+    private String title;
+    private String publisher;
 
     public Publication() {
     }
 
-    public Publication(int citations, int year, String authors, String title) {
+    public Publication(String citations, String year, List<String> authors, String title, String publisher) {
         this.citations = citations;
         this.year = year;
         this.authors = authors;
         this.title = title;
+        this.publisher = publisher;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public List<String> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<String> authors) {
+        this.authors = authors;
     }
 
     public String getTitle() {
@@ -24,27 +44,20 @@ public class Publication {
         this.title = title;
     }
 
-    public int getCitations() {
+    public String getCitations() {
         return citations;
     }
 
-    public void setCitations(int citations) {
+    public void setCitations(String citations) {
         this.citations = citations;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
-    public String getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(String authors) {
-        this.authors = authors;
-    }
 }
