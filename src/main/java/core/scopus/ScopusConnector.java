@@ -15,8 +15,8 @@ import java.util.Objects;
  * Created by Andrei on 5/11/18.
  */
 public class ScopusConnector {
-    private static String firstName = "Petrica";
-    private static String lastName = "Pop";
+    private static String firstName = "";
+    private static String lastName = "";
     private static int i = 0;
     private static Author author = new Author();
 
@@ -37,7 +37,7 @@ public class ScopusConnector {
 //        getAuthorData();
     }
 
-    public static Author getAuthorData(String nameToSearch) {
+    public Author getAuthorData(String nameToSearch) {
         if (nameToSearch.split("\\w+").length > 1) {
 
             lastName = nameToSearch.substring(nameToSearch.lastIndexOf(" ") + 1);
@@ -62,12 +62,9 @@ public class ScopusConnector {
                 for (int i = 0; i < pubList.length(); i++) {
                     JSONObject pub = pubList.getJSONObject(i);
                     Publication pubObject = getDoi(encodeTitle(pub.getString("sourcetitle")));
-//                    pubObject.setTitle(pub.getString("sourcetitle"));
-//                    pubObject.setYear()
                     author.addPublication(pubObject);
                 }
             }
-//            author.setPublicationsNr();
             System.out.println(json.toString());
         } catch (IOException e) {
             e.printStackTrace();
