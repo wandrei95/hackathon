@@ -9,12 +9,12 @@ public class Publication {
     private List<String> authors;
     private String title;
     private String publisher;
-    private List<Citations>citedBy = new ArrayList<>();
+    private List<Citations> citedBy = new ArrayList<>();
 
     public Publication() {
     }
 
-    public Publication(String citations, String year, List<String> authors, String title, String publisher,List<Citations>citedBy) {
+    public Publication(String citations, String year, List<String> authors, String title, String publisher, List<Citations> citedBy) {
         this.citations = citations;
         this.year = year;
         this.authors = authors;
