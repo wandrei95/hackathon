@@ -2,6 +2,7 @@ package core.scholar;
 
 import core.doc.DocProvider;
 import core.entities.Author;
+import core.entities.Citations;
 import core.entities.Publication;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -17,6 +18,8 @@ public class GoogleScholarNew {
     private static final String UNKNOWN_SHIT = "&hl=en&oi=drw";
     private static String baseUrl = "https://scholar.google.ro/";
     public static final String CITATION_HISTORY_URL = "#d=gsc_md_hist&p=&u=";
+    public static final String BASE_URL = "https://scholar.google.ro/citations?";
+    private static String authorId;
 
     private Document getInitialDocToParse() {
         Document document = null;
@@ -67,6 +70,7 @@ public class GoogleScholarNew {
             offset += 100;
             authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=" + offset + "&pagesize=100");
         }
+        System.out.println(returnUrlOfAuthorPhoto());
         return author;
     }
 
@@ -91,6 +95,7 @@ public class GoogleScholarNew {
         String authorUrl = StringUtils
                 .substringAfter(document.select("h3.gsc_oai_name").select("a").toString(), "/");
         authorUrl = StringUtils.substringBefore(authorUrl, ";oe");
+        authorId = StringUtils.substringBefore(StringUtils.substringAfter(authorUrl, "citations?"), "&amp");
         return authorUrl;
     }
 
@@ -108,10 +113,18 @@ public class GoogleScholarNew {
             publication.setCitations(getCitatesBasedOnIndex(authorInformations, index));
             publication.setAuthors(Arrays.asList(getAuthorsBasedOnIndex(authorInformations, 2 * index).split(", ")));
             publication.setPublisher(getPublisherBasedOnIndex(authorInformations, 2 * index + 1));
+//            publication.setCitedBy(getCitedBy(authorInformations, index));
             publications.add(publication);
 
         }
         return publications;
+    }
+
+    private List<Citations> getCitedBy(Document element, int index) {
+        Elements elements = element.select("a.gsc_a_ac.gs_ibl");
+
+
+        return null;
     }
 
     private String getPublisherBasedOnIndex(Document authorInformations, int index) {
@@ -180,6 +193,10 @@ public class GoogleScholarNew {
             }
             idx++;
         }
+    }
+
+    private String returnUrlOfAuthorPhoto() {
+        return BASE_URL + "view_op=view_photo&" + authorId + "&citpid=2";
     }
 
 }

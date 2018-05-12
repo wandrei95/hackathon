@@ -1,5 +1,6 @@
 package core.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Publication {
@@ -8,16 +9,18 @@ public class Publication {
     private List<String> authors;
     private String title;
     private String publisher;
+    private List<Citations>citedBy = new ArrayList<>();
 
     public Publication() {
     }
 
-    public Publication(String citations, String year, List<String> authors, String title, String publisher) {
+    public Publication(String citations, String year, List<String> authors, String title, String publisher,List<Citations>citedBy) {
         this.citations = citations;
         this.year = year;
         this.authors = authors;
         this.title = title;
         this.publisher = publisher;
+        this.citedBy = citedBy;
     }
 
     public String getPublisher() {
@@ -30,6 +33,14 @@ public class Publication {
 
     public List<String> getAuthors() {
         return authors;
+    }
+
+    public List<Citations> getCitedBy() {
+        return citedBy;
+    }
+
+    public void setCitedBy(List<Citations> citedBy) {
+        this.citedBy = citedBy;
     }
 
     public void setAuthors(List<String> authors) {
