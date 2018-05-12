@@ -22,7 +22,7 @@ public class AuthorController {
         DataFetcher dataFetcher = new DataFetcher(googleScholarNew);
         AtomicReference<Author> author = new AtomicReference<>();
 
-        dataFetcher.getAuthorByName(lowerCaseAuthorName, (a -> author.set(a)));
+        dataFetcher.getAuthorByName(lowerCaseAuthorName, (author::set));
 
         while (author.get() == null) {
         }

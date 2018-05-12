@@ -2,7 +2,6 @@ package core.scholar;
 
 import core.doc.DocProvider;
 import core.entities.Author;
-import core.entities.Citations;
 import core.entities.Publication;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -47,8 +46,6 @@ public class GoogleScholarNew {
 
         Author author = new Author(authorName);
 
-        setAuthorPhoto(document, author);
-
         author.setCitationHistory(graphicsInfo);
 
         author.setImageUrl(returnUrlOfAuthorPhoto());
@@ -91,13 +88,6 @@ public class GoogleScholarNew {
             return element.text();
         }
         return null;
-    }
-
-    private void setAuthorPhoto(Document document, Author author) {
-        Element image = document.select("img").first();
-        String urlSmallPhoto = image.absUrl("srcset");
-        String urlFullPhoto = urlSmallPhoto.replace("small_photo", "view_photo");
-        author.setPhotoUrl(urlFullPhoto);
     }
 
     private Map<String, Integer> getCitationHistory(Document citationsInformations) {
