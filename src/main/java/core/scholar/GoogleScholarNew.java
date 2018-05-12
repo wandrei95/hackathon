@@ -51,6 +51,10 @@ public class GoogleScholarNew {
 
         author.setCitationHistory(graphicsInfo);
 
+        author.setImageUrl(returnUrlOfAuthorPhoto());
+
+        author.setOrganization(returnOrganizationFromHTML(authorInformations));
+
         addAuthorInformations(author, authorInformations);
         int defaultPageSize = 100;
         int offset = 0;
@@ -72,6 +76,15 @@ public class GoogleScholarNew {
         }
         System.out.println(returnUrlOfAuthorPhoto());
         return author;
+    }
+
+    private String returnOrganizationFromHTML(Document document) {
+        Elements elements = document.select("a.gsc_prf_ila");
+        for (Element element:elements)
+        {
+            return element.text();
+        }
+        return null;
     }
 
     private void setAuthorPhoto(Document document, Author author) {
