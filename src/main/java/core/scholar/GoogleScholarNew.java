@@ -83,10 +83,15 @@ public class GoogleScholarNew {
     }
 
     private String returnOrganizationFromHTML(Document document) {
-        Elements elements = document.select("a.gsc_prf_ila");
+        Elements elements = document.select("div.gsc_prf_il");
+        Elements elemens = document.select("a.gsc_prf_ila");
         for (Element element : elements) {
             return element.text();
         }
+        if (elemens.size() > 0 && !(elemens.text().isEmpty())) {
+            return elemens.text();
+        }
+
         return null;
     }
 
@@ -133,7 +138,34 @@ public class GoogleScholarNew {
     private List<String> getCitedLocations(Document authorInformations) throws IOException {
         List<String> toReturnLocations = new ArrayList<>();
         Elements elements = authorInformations.select("a.gsc_a_ac.gs_ibl");
-        Element element = elements.get(0);
+        for (Element element : elements) {
+            String toBeParsedUrl = StringUtils.substringBefore(StringUtils.substringAfter(element.toString(), "<a href=\""), "\"");
+            String parsedUrl = StringUtils.substringBefore(toBeParsedUrl, "amp;oe=Latin2&amp;")
+                    + StringUtils.substringAfter(toBeParsedUrl, "Latin2&amp;");
+            Document document = null;
+            try {
+                document = DocProvider.getDocument(parsedUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Elements elementsWithAuthors = document.select("div.gs_a");
+            Elements citors = elementsWithAuthors.select("a");
+            for (Element citor : citors) {
+                String citorUrl = StringUtils.substringBefore(StringUtils.substringAfter(citor.toString(), "\""), "\">");
+                String requestUrl = baseUrl + citorUrl;
+                Document documentContainingLocation = DocProvider.getDocument(requestUrl);
+                Elements location = documentContainingLocation.select("div.gsc_prf_il");
+                toReturnLocations.add(location.get(0).text());
+            }
+            return toReturnLocations;
+
+        }
+        return null;
+    }
+
+/*
+    private List<String> getCitedLocations(Document authorInformations) throws IOException {
+        List<String> toReturnLocations = new ArrayList<>();
         String toBeParsedUrl = StringUtils.substringBefore(StringUtils.substringAfter(authorInformations.select("a.gsc_a_ac.gs_ibl").get(0).toString(), "<a href=\""), "\"");
         String parsedUrl = StringUtils.substringBefore(toBeParsedUrl, "amp;oe=Latin2&amp;")
                 + StringUtils.substringAfter(toBeParsedUrl, "Latin2&amp;");
@@ -152,10 +184,10 @@ public class GoogleScholarNew {
             Elements location = documentContainingLocation.select("div.gsc_prf_il");
             toReturnLocations.add(location.get(0).text());
         }
-
         return toReturnLocations;
 
     }
+*/
 
     private String getPublisherBasedOnIndex(Document authorInformations, int index) {
         Elements elements = authorInformations.select("div.gs_gray");
