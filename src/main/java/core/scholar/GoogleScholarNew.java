@@ -17,8 +17,8 @@ public class GoogleScholarNew {
     private static String AUTHOR_TO_LOOK_FOR = null;
     private static final String UNKNOWN_SHIT = "&hl=en&oi=drw";
     private static String baseUrl = "https://scholar.google.ro/";
-    public static final String CITATION_HISTORY_URL = "#d=gsc_md_hist&p=&u=";
-    public static final String BASE_URL = "https://scholar.google.ro/citations?";
+    private static final String CITATION_HISTORY_URL = "#d=gsc_md_hist&p=&u=";
+    private static final String BASE_URL = "https://scholar.google.ro/citations?";
     private static String authorId;
 
     private Document getInitialDocToParse() {
@@ -60,6 +60,12 @@ public class GoogleScholarNew {
         int offset = 0;
         boolean shouldStop = false;
         boolean firstPageRequest = true;
+        List<String> citedLocations = null;
+        try {
+            citedLocations = getCitedLocations(authorInformations);
+        } catch (Exception e) {
+
+        }
         while (!shouldStop) {
             List<Publication> publications = getPublicationsByAuthor(authorInformations);
             if (publications.size() < 100 && !firstPageRequest) {
@@ -74,14 +80,14 @@ public class GoogleScholarNew {
             offset += 100;
             authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=" + offset + "&pagesize=100");
         }
-        System.out.println(returnUrlOfAuthorPhoto());
+        author.setCitedLocations(citedLocations);
+
         return author;
     }
 
     private String returnOrganizationFromHTML(Document document) {
         Elements elements = document.select("a.gsc_prf_ila");
-        for (Element element:elements)
-        {
+        for (Element element : elements) {
             return element.text();
         }
         return null;
@@ -126,6 +132,7 @@ public class GoogleScholarNew {
             publication.setCitations(getCitatesBasedOnIndex(authorInformations, index));
             publication.setAuthors(Arrays.asList(getAuthorsBasedOnIndex(authorInformations, 2 * index).split(", ")));
             publication.setPublisher(getPublisherBasedOnIndex(authorInformations, 2 * index + 1));
+
 //            publication.setCitedBy(getCitedBy(authorInformations, index));
             publications.add(publication);
 
@@ -133,11 +140,31 @@ public class GoogleScholarNew {
         return publications;
     }
 
-    private List<Citations> getCitedBy(Document element, int index) {
-        Elements elements = element.select("a.gsc_a_ac.gs_ibl");
+    private List<String> getCitedLocations(Document authorInformations) throws IOException {
+        List<String> toReturnLocations = new ArrayList<>();
+        Elements elements = authorInformations.select("a.gsc_a_ac.gs_ibl");
+        Element element = elements.get(0);
+        String toBeParsedUrl = StringUtils.substringBefore(StringUtils.substringAfter(authorInformations.select("a.gsc_a_ac.gs_ibl").get(0).toString(), "<a href=\""), "\"");
+        String parsedUrl = StringUtils.substringBefore(toBeParsedUrl, "amp;oe=Latin2&amp;")
+                + StringUtils.substringAfter(toBeParsedUrl, "Latin2&amp;");
+        Document document = null;
+        try {
+            document = DocProvider.getDocument(parsedUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Elements elementsWithAuthors = document.select("div.gs_a");
+        Elements citors = elementsWithAuthors.select("a");
+        for (Element citor : citors) {
+            String citorUrl = StringUtils.substringBefore(StringUtils.substringAfter(citor.toString(), "\""), "\">");
+            String requestUrl = baseUrl + citorUrl;
+            Document documentContainingLocation = DocProvider.getDocument(requestUrl);
+            Elements location = documentContainingLocation.select("div.gsc_prf_il");
+            toReturnLocations.add(location.get(0).text());
+        }
 
+        return toReturnLocations;
 
-        return null;
     }
 
     private String getPublisherBasedOnIndex(Document authorInformations, int index) {
