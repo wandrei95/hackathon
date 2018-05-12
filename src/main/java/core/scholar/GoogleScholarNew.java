@@ -34,6 +34,7 @@ public class GoogleScholarNew {
         AUTHOR_TO_LOOK_FOR = firstName + "+" + lastName;
 
         Document document = getInitialDocToParse();
+
         String informationsUrl = baseUrl + getUrlOfInfos(document);
         Document citationsInformations = DocProvider.getDocument(informationsUrl + CITATION_HISTORY_URL);
 
@@ -42,6 +43,8 @@ public class GoogleScholarNew {
         Document authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=0&pagesize=100");
 
         Author author = new Author(authorName);
+
+        setAuthorPhoto(document, author);
 
         author.setCitationHistory(graphicsInfo);
 
@@ -65,6 +68,13 @@ public class GoogleScholarNew {
             authorInformations = DocProvider.getDocument(informationsUrl + "&cstart=" + offset + "&pagesize=100");
         }
         return author;
+    }
+
+    private void setAuthorPhoto(Document document, Author author) {
+        Element image = document.select("img").first();
+        String urlSmallPhoto = image.absUrl("srcset");
+        String urlFullPhoto = urlSmallPhoto.replace("small_photo", "view_photo");
+        author.setPhotoUrl(urlFullPhoto);
     }
 
     private Map<String, Integer> getCitationHistory(Document citationsInformations) {

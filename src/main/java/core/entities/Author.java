@@ -11,8 +11,31 @@ public class Author {
     private String hIndex;
     private Integer publicationsNr;
     private String citations;
+    private String photoUrl;
     private List<Publication> publications = new ArrayList<Publication>();
     private Map<String, Integer> citationHistory = new HashMap<>();
+
+    public Author() {
+    }
+
+    public Author(String name, String i10index, String hIndex, Integer publicationsNr, String citations, String photoUrl, List<Publication> publications, Map<String, Integer> citationHistory) {
+        this.name = name;
+        this.i10index = i10index;
+        this.hIndex = hIndex;
+        this.publicationsNr = publicationsNr;
+        this.citations = citations;
+        this.photoUrl = photoUrl;
+        this.publications = publications;
+        this.citationHistory = citationHistory;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
     public List<Publication> getPublications() {
         return publications;
@@ -32,18 +55,6 @@ public class Author {
 
     public Author(String name) {
         this.name = name;
-    }
-
-    public Author() {
-    }
-
-    public Author(String name, String i10index, String hIndex, Integer publicationsNr, String citations, List<Publication> publications) {
-        this.name = name;
-        this.i10index = i10index;
-        this.hIndex = hIndex;
-        this.publicationsNr = publicationsNr;
-        this.citations = citations;
-        this.publications = publications;
     }
 
     public String getCitations() {
