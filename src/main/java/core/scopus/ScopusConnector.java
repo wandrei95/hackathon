@@ -15,7 +15,6 @@ import java.util.Objects;
  * Created by Andrei on 5/11/18.
  */
 public class ScopusConnector {
-    //    private static final String ApiKey = "72e8903b0eac9dc225c60d511b2bd119";
     private static String firstName = "Petrica";
     private static String lastName = "Pop";
     private static int i = 0;
@@ -62,8 +61,8 @@ public class ScopusConnector {
                 JSONArray pubList = object.getJSONObject("author-profile").getJSONArray("journal-history");
                 for (int i = 0; i < pubList.length(); i++) {
                     JSONObject pub = pubList.getJSONObject(i);
-                    Publication pubObject = new Publication();
-                    pubObject.setTitle(pub.getString("sourcetitle"));
+                    Publication pubObject = getDoi(encodeTitle(pub.getString("sourcetitle")));
+//                    pubObject.setTitle(pub.getString("sourcetitle"));
 //                    pubObject.setYear()
                     author.addPublication(pubObject);
                 }
@@ -75,6 +74,57 @@ public class ScopusConnector {
         }
 
         return author;
+    }
+
+
+    private static Publication getDoi(String title) {
+        String string = "https://api.elsevier.com/content/search/scopus?query=title(" + title + ")&apiKey=72e8903b0eac9dc225c60d511b2bd119";
+        JSONObject json;
+        Publication publicationObject = null;
+        String result = "";
+        try {
+            json = readJsonFromUrl(string);
+            JSONArray publications = json.getJSONObject("search-results").getJSONArray("entry");
+            for (int i = 0; i < publications.length(); i++) {
+                JSONObject pub = publications.getJSONObject(i);
+                if (Objects.equals(decodeTitle(title), pub.getString("dc:title"))) {
+                    publicationObject = new Publication();
+                    publicationObject.setTitle(pub.getString("dc:title"));
+                    publicationObject.setYear(pub.getString("prism:coverDate").split("\\-")[0]);
+                    String scopusId = pub.getString("dc:identifier").substring(pub.getString("dc:identifier").lastIndexOf(":") + 1);
+                    publicationObject.setCitations(getCitationCount(scopusId));
+                    return publicationObject;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+        return publicationObject;
+    }
+
+    private static String decodeTitle(String title) {
+        return title.replaceAll("%20", "");
+    }
+
+    private static String encodeTitle(String title) {
+        return title.replaceAll(" ", "%20");
+    }
+
+    private static String getCitationCount(String scopusId) {
+        String string = "https://api.elsevier.com/content/abstract/citations?scopus_id=" + scopusId + "&apiKey=7f59af901d2d86f78a1fd60c1bf9426a&httpAccept=application%2Fjson";
+        JSONObject json;
+
+        String result = "";
+        try {
+            json = readJsonFromUrl(string);
+            JSONObject publications = json.getJSONObject("abstract-citations-response").getJSONObject("citeColumnTotalXML").getJSONObject("citeCountHeader");
+            return publications.getString("grandTotal");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private static String getAuthorId() {
